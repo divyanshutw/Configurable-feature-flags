@@ -16,6 +16,11 @@ Based on this timestamp, I decide at runtime which experiments the user should b
 
 Now, let’s delve into the implementation details in the code.🧑‍💻
 
+# ✍️Low level design:
+Here is the class diagram of the service depicting all important classes, models and entities:
+
+![Low level design pic1](https://miro.medium.com/v2/resize:fit:720/format:webp/0*3pfrDdaeM72twK9S)
+![Low level design pic2](https://miro.medium.com/v2/resize:fit:720/format:webp/0*dGdbOETwzZVR3PvB)
 
 Here are some details of the project:
 
@@ -37,27 +42,31 @@ spring.jpa.defer-datasource-initialization=true
 private long getExpIdentifier(HttpServletRequest httpServletRequest)
 This function returns the unique experiment identifier. In the first browser session, no “expId” cookie is received and so this function returns the current epoch timestamp. Then I set the “expId” cookie as that timestamp. In all further API calls in that browser session, this cookie will be received in the header and returned by this function.
 
-IExpIdentifierGetService expIdentifierGetService = expIdentifierGetFactory.getExpIdentifierService();
+> IExpIdentifierGetService expIdentifierGetService = expIdentifierGetFactory.getExpIdentifierService();
+
 This is a simple factory pattern based design by which I get to know which system is to be used: DB_BASED or PROPERTY_BASED. You would be using either of these systems, so you can Autowire the respective service directly instead of using a factory pattern based system.
 
 DB_BASED: All experiments and their configurations are stored in mysql server.
 
 PROPERTY_BASED: The system is based on a few simple properties. To change the configuration of an experiment, add/remove an experiment, etc. I’ll have to pass the new properties in command and restart the service.
 
-List<ExpNameValueModel> expNameValueModelList = expIdentifierGetService.getAllActiveExperiments();
+> List<ExpNameValueModel> expNameValueModelList = expIdentifierGetService.getAllActiveExperiments();
+
 This will give us a list of all experiments. For DB_BASED, I run a simple query to get all experiments. For PROPERTY_BASED, I use the following 3 properties to get the list of all experiments.
 
-#This property has the names of experiments separated by ';'. Experiment cookies will be set by this name only.
-traffic-split-service.exp-config.keys=exp1;exp2
-#This property has the values of all respective experiments. The values of two different experiments are separated by ';' and values of one particular experiment are separated by ','
-traffic-split-service.exp-config.values=A,B,C,D;true,false
-#This property has the traffic percentage of all respective experiments. The traffic split of two different experiments are separated by ';' and traffic percentages of one particular experiment are separated by ','
-traffic-split-service.exp-config.traffic-split=10,20,30,40;20,80
+> #This property has the names of experiments separated by ';'. Experiment cookies will be set by this name only.
+> traffic-split-service.exp-config.keys=exp1;exp2
+> #This property has the values of all respective experiments. The values of two different experiments are separated by ';' and values of one particular experiment are separated by ','
+> traffic-split-service.exp-config.values=A,B,C,D;true,false
+> #This property has the traffic percentage of all respective experiments. The traffic split of two different experiments are separated by ';' and traffic percentages of one particular experiment are separated by ','
+> traffic-split-service.exp-config.traffic-split=10,20,30,40;20,80
+
 Based on these properties, I collect the list of of all experiments.
 
 For example, as per above properties, “exp1" will have 4 variations. These variations and their respective traffic divisions are: A:10, B:20, C:30, D:40
 
-private String getExpValue(long expIdentifierValue, ExpNameValueModel expNameValueModel)
+> private String getExpValue(long expIdentifierValue, ExpNameValueModel expNameValueModel)
+
 I iterate over each experiment configuration and pass it in this function. I also pass the expIdentifierValue(expId) to this function. This function has the probability distribution logic and returns what value to be given to which experiment based on the value of expIdentifierValue.
 
 Next I simply set the experiment key and value in request attribute, response header and cookie.
