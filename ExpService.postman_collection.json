@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "7243c874-f18c-44db-9f11-f04f5080b168",
+		"name": "ExpService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21894692"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-exp",
+						"value": "gg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"expName\": \"recoExp3\",\n    \"expValues\": [\n        {\n            \"expValue\": \"tata\",\n            \"trafficPercent\": 20\n        },\n        {\n            \"expValue\": \"bata\",\n            \"trafficPercent\": 20\n        },\n        {\n            \"expValue\": \"sata\",\n            \"trafficPercent\": 60\n        }\n    ],\n    \"criteria\": \"userId\"   \n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get exp",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8081/getExp?expName=recoExp2",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"getExp"
+					],
+					"query": [
+						{
+							"key": "expName",
+							"value": "recoExp2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update Exp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": 1,\n        \"trafficPercent\": 40\n    },\n    {\n        \"id\": 2,\n        \"trafficPercent\": 60\n    }\n    ,\n    {\n        \"id\": 3,\n        \"trafficPercent\": 0\n    }\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8081/updateExp",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"updateExp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check exp",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-exp",
+						"value": "17722",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "recoExp",
+						"value": "A",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "localhost:8081/checkExpType?expName=exp2",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"checkExpType"
+					],
+					"query": [
+						{
+							"key": "expName",
+							"value": "exp2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
